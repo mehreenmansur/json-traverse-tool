@@ -2,26 +2,33 @@ class HomeController < ApplicationController
   require 'json'
   require 'ostruct'
 
-  def index; end
+  def index
+    @json = read_json_file
+  end
 
   def search
-    json_file = File.read('sample_json_traverse.json')
+    @json = read_json_file
+    json_data = JSON.parse(@json, object_class: OpenStruct)
 
-    json_data = JSON.parse(json_file, object_class: OpenStruct)
+    @data = params[:search_data]
+    search_data = @data.split('.')
 
-    search_data = params[:search_data].split('.')
     i = 0
     while (i < search_data.length)
-      if i == 0
-        value = json_data.send("#{search_data[i]}")
-      else
-        value = value.send("#{search_data[i]}")
-      end
+      @answer = if i.equal?(0)
+                  json_data.send("#{search_data[i]}")
+                else
+                  @answer.send("#{search_data[i]}")
+                end
       i += 1
     end
-    @answer = value
+
     respond_to do |format|
       format.html
     end
+  end
+
+  def read_json_file
+    File.read('sample_json_traverse.json')
   end
 end
