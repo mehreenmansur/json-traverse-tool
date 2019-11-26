@@ -1,3 +1,5 @@
+App link: https://json-traverse-tool.herokuapp.com/
+
 This is a simple tool to traverse the values of a given JSON file.
 
 Steps to run the app
